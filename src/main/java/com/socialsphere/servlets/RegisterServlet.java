@@ -6,10 +6,15 @@ import com.socialsphere.dao.UserDAOImpl;
 import jakarta.servlet.http.*;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 
 public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Set response content type to HTML so that <a> links work
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
@@ -18,18 +23,18 @@ public class RegisterServlet extends HttpServlet {
 
         try {
             if (userDAO.isUsernameTaken(username)) {
-                response.getWriter().println("Username already exists. <a href='register.html'>Try again</a>");
+                out.println("Username already exists. <a href='register.html'>Try again</a>");
                 return;
             }
 
             if (userDAO.registerUser(username, password, email)) {
-                response.getWriter().println("Registration successful. <a href='login.html'>Login</a>");
+                out.println("Registration successful. <a href='login.html'>Login</a>");
             } else {
-                response.getWriter().println("Registration failed.");
+                out.println("Registration failed.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.getWriter().println("Error occurred. Please try again.");
+            out.println("Error occurred. Please try again.");
         }
     }
 }
