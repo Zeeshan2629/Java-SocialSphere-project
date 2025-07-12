@@ -6,10 +6,15 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.ServletException;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.*;
 
 public class CreatePostServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Set content type to HTML to render links properly
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         HttpSession session = request.getSession();
@@ -38,14 +43,14 @@ public class CreatePostServlet extends HttpServlet {
                 postStmt.setString(3, content);
                 postStmt.executeUpdate();
 
-                response.getWriter().println("Post created! <a href='home.jsp'>Back to Home</a>");
+                out.println("Post created! <a href='home.jsp'>Back to Home</a>");
             } else {
-                response.getWriter().println("User not found.");
+                out.println("User not found.");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            response.getWriter().println("Error while creating post.");
+            out.println("Error while creating post.");
         }
     }
 }
